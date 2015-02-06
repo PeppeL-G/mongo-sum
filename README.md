@@ -47,7 +47,7 @@ Template.myTemplate.created = function(){
 
 Template.myTemplate.helpers({
 	sum: function(){
-		return this.sum.get()
+		return Template.instance().sum.get()
 	}
 })
 
