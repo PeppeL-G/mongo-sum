@@ -2,7 +2,6 @@ Package.describe({
 	name: 'peppelg:mongo-sum',
 	version: '1.0.0',
 	summary: 'Reactive sum queries in MiniMongo on client.',
-	// URL to the Git repository containing the source code for this package.
 	git: 'https://github.com/PeppeL-G/mongo-sum.git',
 	documentation: 'README.md'
 })
