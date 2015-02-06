@@ -15,4 +15,5 @@ Package.onUse(function(api) {
 	api.use('reactive-var', 'client')
 	
 	api.addFiles('main.js', 'client')
+	
 })

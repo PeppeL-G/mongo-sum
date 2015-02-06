@@ -21,11 +21,11 @@ totalScore.stop()
 
 Documentation
 -----
-`collection.sum(selector, field, options)`
+`collection.sum(selector, field)`
 
-`selector` and `options` work the same way as for
-[collection.find](http://docs.meteor.com/#/full/find). `options` is optional.
-`field` is the field in the collection that should be summed.
+`selector` works the same way as for
+[collection.find](http://docs.meteor.com/#/full/find). `field` is the field in
+the collection that should be summed.
 
 Returns an instance of `ReactiveVar` that will be updated reactively. Use the
 `get` method to retrive the sum. Don't use the `set` method. An additional
