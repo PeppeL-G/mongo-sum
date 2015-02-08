@@ -1,39 +1,31 @@
-Mongo.Collection.prototype.sum = function(selector, field){
+Mongo.Cursor.prototype.sum = function(fieldOrFunc){
 	
-	// Get the cursor.
-	var options = {
-		fields: {},
-		transform: null
+	// This code is written by looking at and copying code in the count and map
+	// methods. Therefore, a better implementation may exists.
+	var self = this
+	
+	if(self.reactive){
+		self._depend({added: true, removed: true}, true)
 	}
-	options.fields[field] = 1
 	
-	var cursor = this.find(selector, options)
+	var sum = 0
 	
-	// Calculate the sum at the moment.
-	var initialSum = 0
-	cursor.forEach(function(doc){
-		initialSum += doc[field]
-	})
-	
-	// Create the reactive variable storing the sum.
-	var sum = new ReactiveVar(initialSum)
-	
-	// Change the sum on changes.
-	var cursorHandle = cursor.observe({
-		added: function(doc){
-			sum.set(sum.get() + doc[field])
-		},
-		changed: function(newDoc, oldDoc){
-			sum.set(sum.get() + newDoc[field] - oldDoc[field])
-		},
-		removed: function(doc){
-			sum.set(sum.get() - doc[field])
-		}
-	})
-	
-	// Add a stop handle to the reactive sum variable.
-	sum.stop = function(){
-		cursorHandle.stop()
+	if(_.isFunction(fieldOrFunc)){
+		
+		var func = fieldOrFunc
+		
+		self.forEach(function(doc){
+			sum += func(doc)
+		})
+		
+	}else{
+		
+		var field = fieldOrFunc
+		
+		self.forEach(function(doc){
+			sum += doc[field]
+		})
+		
 	}
 	
 	return sum

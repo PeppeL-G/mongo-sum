@@ -3,7 +3,7 @@ mongo-sum
 A Meteor package making it easy to reactively calculate sums in Mongo
 collections on the client.
 
-This package adds a property called `sum` to `Mongo.Collection.prototype` on
+This package adds a property called `sum` to `Mongo.Cursor.prototype` on
 the client. It can be used to reactively calculate sums in a collection.
 Example: 
 
@@ -13,45 +13,27 @@ HighScores.insert({score:   10})
 HighScores.insert({score:  100})
 HighScores.insert({score: 1000})
 
-var totalScore = HighScores.sum({}, 'score')
+Tracker.autorun(function(){
+	console.log("The sum of all scores is "+HighScores.sum({}, 'score'))
+})
 
-console.log("The sum of all scores is "+totalScore.get()) // Logs: The sum of all scores is 1110
-totalScore.stop()
+// The follwing has been printed to the console: The sum of all scores is 1110
+
+HighScores.insert({score: 1})
+
+// The follwing has been printed to the console: The sum of all scores is 1111
 ```
 
 Documentation
 -----
-`collection.sum(selector, field)`
+`cursor.sum(fieldOrFunc)`
 
-`selector` works the same way as for
-[collection.find](http://docs.meteor.com/#/full/find). `field` is the field in
-the collection that should be summed.
+If the parameter `fieldOrFunc` is a string, it will return the sum of all the
+values `doc[fieldOrString]` in the cursor. 
 
-Returns an instance of `ReactiveVar` that will be updated reactively. Use the
-`get` method to retrive the sum. Don't use the `set` method. An additional
-`stop` method has been added to the returned instance. This method must be
-called when you've used the `get` method for the last time (otherwise will the
-reactive instance returned continue to be updated for infinity (AKA memory leak).
+If the parameter `fieldOrFunc` is a function, it will return the sum of all the
+values `fieldOrFunc(doc)` in the cursor. 
 
-Advice
-------
-Using `collection.sum` in reactive computations (for example template helpers)
-is probably a bad idea. Instead, use the returned `ReactiveVar` instance's
-`get` method in reactive computations. Typically, in templates, it would look
-like this:
-
-```javascript
-Template.myTemplate.created = function(){
-	this.sum = MyCollection.sum({}, 'theField')
-}
-
-Template.myTemplate.helpers({
-	sum: function(){
-		return Template.instance().sum.get()
-	}
-})
-
-Template.myTemplate.destroyed = function(){
-	this.sum.stop()
-}
-```
+Note that `cursor.sum` is affected by tranformations, and that it overall will
+work the same way as [cursor.count](http://docs.meteor.com/#/full/count)
+(regarding reactivity).
