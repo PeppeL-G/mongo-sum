@@ -14,7 +14,7 @@ HighScores.insert({score:  100})
 HighScores.insert({score: 1000})
 
 Tracker.autorun(function(){
-	console.log("The sum of all scores is "+HighScores.sum({}, 'score'))
+	console.log("The sum of all scores is "+HighScores.find({}).sum('score'))
 })
 
 // The follwing has been printed to the console: The sum of all scores is 1110
